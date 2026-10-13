@@ -228,9 +228,9 @@ class SplitConfig(ConfigNode):
             return r"(?!x)x"
         tokens: list[str] = []
         for ch in self.char_list:
-            if ch in ("\\n", "\n"):
+            if ch == "\n" or (len(ch) > 1 and ch.lstrip("\\") == "n"):
                 tokens.append("\n")
-            elif ch == "\\s":
+            elif ch == " " or (len(ch) > 1 and ch.lstrip("\\") == "s"):
                 tokens.append(r"\s")
             else:
                 tokens.append(re.escape(ch))
@@ -239,9 +239,9 @@ class SplitConfig(ConfigNode):
     def _build_split_priority(self) -> dict[str, int]:
         priority: dict[str, int] = {}
         for idx, ch in enumerate(self.char_list):
-            if ch == "\\n":
+            if ch == "\n" or (len(ch) > 1 and ch.lstrip("\\") == "n"):
                 priority.setdefault("\n", idx)
-            elif ch == "\\s":
+            elif ch == " " or (len(ch) > 1 and ch.lstrip("\\") == "s"):
                 priority.setdefault(" ", idx)
             else:
                 priority.setdefault(ch, idx)
