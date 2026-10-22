@@ -32,10 +32,11 @@ class BlockStep(BaseStep):
                 pass
 
         if int(time.time()) - reference > self.cfg.timeout:
-            elapsed = int(time.time() - reference)
+            # 毫秒级记录，避免 int() 截断把刚超阈值的耗时显示成恰好等于 limit
+            elapsed = time.time() - reference
             ctx.event.set_result(ctx.event.plain_result(""))
             logger.info(
-                "[outputpro][block] reason=timeout chars=%d elapsed=%ds limit=%ds",
+                "[outputpro][block] reason=timeout chars=%d elapsed=%.3fs limit=%ds",
                 len(ctx.plain),
                 elapsed,
                 self.cfg.timeout,
